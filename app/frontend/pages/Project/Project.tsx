@@ -1,7 +1,7 @@
-import { ProjectType } from './types'
+import { ProjectType } from "./types";
 
 interface ProjectProps {
-  project: ProjectType
+  project: ProjectType;
 }
 
 export default function Project({ project }: ProjectProps) {
@@ -11,6 +11,9 @@ export default function Project({ project }: ProjectProps) {
         <strong className="block font-medium mb-1">Title:</strong>
         {project.title?.toString()}
       </p>
+
+      <p>{project.status ? project.status.title : "No status"}</p>
     </div>
-  )
+  );
 }
+

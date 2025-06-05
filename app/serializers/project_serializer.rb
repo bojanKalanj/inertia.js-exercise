@@ -8,4 +8,8 @@ class ProjectSerializer < BaseSerializer
     "id",
     "status_id",
   )
+
+  attribute :status, if: -> { expand.include?("status") && project.status } do
+    StatusSerializer.render(project.status)
+  end
 end
