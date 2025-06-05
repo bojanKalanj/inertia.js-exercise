@@ -6,16 +6,14 @@ class ProjectsController < ApplicationController
   # GET /projects
   def index
     @projects = Project.all
-    render inertia: 'Project/Index', props: {
-      projects: @projects.map do |project|
-        serialize_project(project)
-      end
+    render inertia: "Project/Index", props: {
+      projects: ProjectSerializer.render(@projects)
     }
   end
 
   # GET /projects/1
   def show
-    render inertia: 'Project/Show', props: {
+    render inertia: "Project/Show", props: {
       project: serialize_project(@project)
     }
   end
@@ -23,14 +21,14 @@ class ProjectsController < ApplicationController
   # GET /projects/new
   def new
     @project = Project.new
-    render inertia: 'Project/New', props: {
+    render inertia: "Project/New", props: {
       project: serialize_project(@project)
     }
   end
 
   # GET /projects/1/edit
   def edit
-    render inertia: 'Project/Edit', props: {
+    render inertia: "Project/Edit", props: {
       project: serialize_project(@project)
     }
   end
