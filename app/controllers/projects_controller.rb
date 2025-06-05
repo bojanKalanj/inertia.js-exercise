@@ -14,7 +14,7 @@ class ProjectsController < ApplicationController
   # GET /projects/1
   def show
     render inertia: "Project/Show", props: {
-      project: serialize_project(@project)
+      project: ProjectSerializer.render(@project)
     }
   end
 
@@ -22,14 +22,15 @@ class ProjectsController < ApplicationController
   def new
     @project = Project.new
     render inertia: "Project/New", props: {
-      project: serialize_project(@project)
+      project: ProjectSerializer.render(@project)
     }
   end
 
   # GET /projects/1/edit
   def edit
     render inertia: "Project/Edit", props: {
-      project: serialize_project(@project)
+      project: ProjectSerializer.render(@project),
+      statuses: StatusSerializer.render(Status.all)
     }
   end
 
@@ -68,11 +69,5 @@ class ProjectsController < ApplicationController
     # Only allow a list of trusted parameters through.
     def project_params
       params.require(:project).permit(:title)
-    end
-
-    def serialize_project(project)
-      project.as_json(only: [
-        :id, :title
-      ])
     end
 end

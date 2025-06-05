@@ -1,11 +1,11 @@
-class ProjectSerializer < BaseSerializer
+class StatusSerializer < BaseSerializer
   attribute :type do "Project" end
 
   attributes(
     "created_at",
     "updated_at",
-    "title",
     "id",
-    "status_id",
+    "title",
+    "key",
   )
 end

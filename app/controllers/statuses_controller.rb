@@ -6,32 +6,30 @@ class StatusesController < ApplicationController
   # GET /statuses
   def index
     @statuses = Status.all
-    render inertia: 'Status/Index', props: {
-      statuses: @statuses.map do |status|
-        serialize_status(status)
-      end
+    render inertia: "Status/Index", props: {
+      statuses: StatusSerializer.render(@statuses)
     }
   end
 
   # GET /statuses/1
   def show
-    render inertia: 'Status/Show', props: {
-      status: serialize_status(@status)
+    render inertia: "Status/Show", props: {
+      status: StatusSerializer.render(@status)
     }
   end
 
   # GET /statuses/new
   def new
     @status = Status.new
-    render inertia: 'Status/New', props: {
-      status: serialize_status(@status)
+    render inertia: "Status/New", props: {
+      status: StatusSerializer.render(@status)
     }
   end
 
   # GET /statuses/1/edit
   def edit
-    render inertia: 'Status/Edit', props: {
-      status: serialize_status(@status)
+    render inertia: "Status/Edit", props: {
+      status: StatusSerializer.render(@status)
     }
   end
 
@@ -70,11 +68,5 @@ class StatusesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def status_params
       params.require(:status).permit(:title, :key)
-    end
-
-    def serialize_status(status)
-      status.as_json(only: [
-        :id, :title, :key
-      ])
     end
 end

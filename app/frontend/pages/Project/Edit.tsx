@@ -1,12 +1,16 @@
-import { Head, Link } from '@inertiajs/react'
-import Form from './Form'
-import { ProjectType } from './types'
+import { Head, Link } from "@inertiajs/react";
+import Form from "./Form";
+import { ProjectType } from "./types";
+import { StatusType } from "../Status/types";
 
 interface EditProps {
-  project: ProjectType
+  project: ProjectType;
+  statuses: StatusType[];
 }
 
-export default function Edit({ project }: EditProps) {
+export default function Edit({ project, statuses }: EditProps) {
+  console.log(statuses);
+
   return (
     <>
       <Head title="Editing project" />
@@ -17,10 +21,11 @@ export default function Edit({ project }: EditProps) {
         <Form
           project={project}
           onSubmit={(form) => {
-            form.transform((data) => ({ project: data }))
-            form.patch(`/projects/${project.id}`)
+            form.transform((data) => ({ project: data }));
+            form.patch(`/projects/${project.id}`);
           }}
           submitText="Update Project"
+          statuses={statuses}
         />
 
         <Link
@@ -37,5 +42,6 @@ export default function Edit({ project }: EditProps) {
         </Link>
       </div>
     </>
-  )
+  );
 }
+
