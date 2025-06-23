@@ -1,3 +1,4 @@
+<% if Current.user %>
 <p style="color: green"><%= notice %></p>
 
 <p>Signed as <%= Current.user.email %></p>
@@ -18,6 +19,25 @@
   <%= link_to "Devices & Sessions", sessions_path %>
 </div>
 
+<div>
+  <%= link_to "Profile", profile_path %>
+</div>
+
 <br>
 
 <%= button_to "Log out", Current.session, method: :delete %>
+<% else %>
+<p>You are not signed in</p>
+
+<%= link_to "Sign in", sign_in_path %>
+<% end %>
+
+
+
+
+
+
+
+
+
+
