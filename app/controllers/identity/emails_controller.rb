@@ -1,4 +1,4 @@
-class Identity::EmailsController < ApplicationController
+class Identity::EmailsController < Identity::IdentityController
   before_action :set_user
 
   def edit

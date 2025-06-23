@@ -1,14 +1,20 @@
-import { Head, Link } from '@inertiajs/react'
-import { Fragment } from 'react'
-import Project from './Project'
-import { ProjectType } from './types'
+import { Head, Link } from "@inertiajs/react";
+import { Fragment } from "react";
+import Project from "./Project";
+import { ProjectType } from "./types";
 
-interface IndexProps {
-  projects: ProjectType[]
-  flash: { notice?: string }
+interface UserType {
+  id: number;
+  email: string;
 }
 
-export default function Index({ projects, flash }: IndexProps) {
+interface IndexProps {
+  projects: ProjectType[];
+  flash: { notice?: string };
+  currentUser: UserType;
+}
+
+export default function Index({ projects, flash, currentUser }: IndexProps) {
   return (
     <>
       <Head title="Projects" />
@@ -45,5 +51,6 @@ export default function Index({ projects, flash }: IndexProps) {
         </div>
       </div>
     </>
-  )
+  );
 }
+

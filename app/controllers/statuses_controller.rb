@@ -1,4 +1,4 @@
-class StatusesController < ApplicationController
+class StatusesController < AuthController
   before_action :set_status, only: %i[ show edit update destroy ]
 
   inertia_share flash: -> { flash.to_hash }

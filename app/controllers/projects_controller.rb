@@ -7,7 +7,8 @@ class ProjectsController < ApplicationController
   def index
     @projects = Project.all
     render inertia: "Project/Index", props: {
-      projects: ProjectSerializer.render(@projects, expand: [ "status" ])
+      projects: ProjectSerializer.render(@projects, expand: [ "status" ]),
+      currentUser: Current.user
     }
   end
 
