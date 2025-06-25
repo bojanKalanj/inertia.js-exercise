@@ -1,5 +1,8 @@
 class User < ApplicationRecord
   has_secure_password
+  has_one_attached :avatar do |attachable|
+    attachable.variant :thumb, resize_to_limit: [ 100, 100 ], preprocessed: true
+  end
 
   generates_token_for :email_verification, expires_in: 2.days do
     email
