@@ -22,7 +22,8 @@ class SessionsController < AuthController
   end
 
   def destroy
-    @session.destroy; redirect_to(sessions_path, notice: "That session has been logged out")
+    @session.destroy
+    redirect_to root_path, notice: "Signed out successfully"
   end
 
   private
