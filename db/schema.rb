@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_07_151604) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_07_152450) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -56,6 +56,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_07_151604) do
     t.index ["status_id"], name: "index_projects_on_status_id"
   end
 
+  create_table "services", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.integer "duration"
+    t.decimal "price"
+    t.integer "company_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["company_id"], name: "index_services_on_company_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.integer "user_id", null: false
     t.string "user_agent"
@@ -87,6 +98,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_07_151604) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "companies", "users", column: "owner_id"
   add_foreign_key "projects", "statuses"
+  add_foreign_key "services", "companies"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "companies"
 end

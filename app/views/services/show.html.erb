@@ -1,0 +1,22 @@
+<p>
+  <strong>Name:</strong>
+  <%= @service.name %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @service.description %>
+</p>
+
+<p>
+  <strong>Duration:</strong>
+  <%= @service.duration %> min
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= number_to_currency(@service.price) %>
+</p>
+
+<%= link_to 'Edit', edit_company_service_path(@company, @service) %> |
+<%= link_to 'Back', company_services_path(@company) %>
