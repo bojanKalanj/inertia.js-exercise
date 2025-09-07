@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_04_153415) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_07_151604) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -78,6 +78,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_153415) do
     t.boolean "verified", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "company_id"
+    t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
@@ -86,4 +88,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_04_153415) do
   add_foreign_key "companies", "users", column: "owner_id"
   add_foreign_key "projects", "statuses"
   add_foreign_key "sessions", "users"
+  add_foreign_key "users", "companies"
 end
