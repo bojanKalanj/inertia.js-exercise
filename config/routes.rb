@@ -1,7 +1,11 @@
 Rails.application.routes.draw do
   resources :companies do
     resources :services
+    get "make-appointment/available-services", to: "make_appointment#available_services"
+    get "make-appointment/:service_id/available-slots", to: "make_appointment#available_slots"
+    resources :appointments, only: [ :new, :create ]
   end
+
   get  "sign_in", to: "sessions#new"
   post "sign_in", to: "sessions#create"
   get  "sign_up", to: "registrations#new"
@@ -20,6 +24,7 @@ Rails.application.routes.draw do
   patch "profile", to: "profile#update_avatar"
   delete "profile/avatar", to: "profile#destroy_avatar"
   get "inertia-example", to: "inertia_example#index"
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
