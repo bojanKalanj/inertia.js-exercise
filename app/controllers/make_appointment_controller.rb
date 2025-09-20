@@ -12,14 +12,35 @@ class MakeAppointmentController < AuthController
     }
   end
 
-  def available_slots (date: Date.today)
+  def available_slots
     set_company
     set_service
-    set_available_slots(date: date)
+    chosen_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
+    set_available_slots(date: chosen_date)
 
-    render inertia: "MakeAppointment/AvailableSlots", props: {
+    respond_to do |format|
+      format.json { render json: { slots: @available_slots } }     # <– for fetch
+      debugger
+      format.html { render inertia: "MakeAppointment/AvailableSlots",
+                     props: {
+                       currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
+                       company: @company,
+                       service: @service,
+                       available_slots: @available_slots
+                     } }
+    end
+  end
+
+  def confirm_booking
+    set_company
+    set_service
+    set_available_slots(date: params[:date])
+    set_booked_slot(date: params[:date], slot: params[:slot])
+
+    render inertia: "MakeAppointment/ConfirmBooking", props: {
       currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
       company: @company,
+      service: @service,
       available_slots: @available_slots
     }
   end
