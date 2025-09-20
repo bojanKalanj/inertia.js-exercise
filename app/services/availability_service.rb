@@ -28,7 +28,7 @@ class AvailabilityService
       end
 
       slots << cursor unless overlaps
-      cursor += 15.minutes # step between slots (configurable)
+      cursor += 5.minutes # step between slots (configurable)
     end
 
     slots

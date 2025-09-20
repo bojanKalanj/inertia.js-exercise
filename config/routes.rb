@@ -1,9 +1,13 @@
 Rails.application.routes.draw do
   resources :companies do
-    resources :services
-    get "make-appointment/available-services", to: "make_appointment#available_services"
-    get "make-appointment/:service_id/available-slots", to: "make_appointment#available_slots"
-    resources :appointments, only: [ :new, :create ]
+    resources :services do
+      resources :appointments do
+        collection do
+          get "available-slots", action: :available_slots
+          post "confirm-booking", action: :confirm_booking
+        end
+      end
+    end
   end
 
   get  "sign_in", to: "sessions#new"

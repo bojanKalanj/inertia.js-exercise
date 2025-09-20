@@ -25,7 +25,7 @@ export default function AvailableSlots({
     const formatted = d.toISOString().split("T")[0];
 
     const res = await fetch(
-      `/companies/${company.id}/make-appointment/${service.id}/available-slots.json?date=${formatted}`
+      `/companies/${company.id}/services/${service.id}/appointments/available-slots.json?date=${formatted}`
     );
 
     const data = await res.json();

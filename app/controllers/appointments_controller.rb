@@ -1,16 +1,5 @@
-class MakeAppointmentController < AuthController
+class AppointmentsController < AuthController
   before_action :try_authenticate
-
-  def available_services
-      set_company
-      set_available_services
-
-    render inertia: "MakeAppointment/AvailableServices", props: {
-      currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
-      company: @company,
-      available_services: @available_services
-    }
-  end
 
   def available_slots
     set_company
@@ -20,8 +9,7 @@ class MakeAppointmentController < AuthController
 
     respond_to do |format|
       format.json { render json: { slots: @available_slots } }     # <– for fetch
-      debugger
-      format.html { render inertia: "MakeAppointment/AvailableSlots",
+      format.html { render inertia: "Appointment/AvailableSlots",
                      props: {
                        currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
                        company: @company,
@@ -37,7 +25,7 @@ class MakeAppointmentController < AuthController
     set_available_slots(date: params[:date])
     set_booked_slot(date: params[:date], slot: params[:slot])
 
-    render inertia: "MakeAppointment/ConfirmBooking", props: {
+    render inertia: "Appointment/ConfirmBooking", props: {
       currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
       company: @company,
       service: @service,
