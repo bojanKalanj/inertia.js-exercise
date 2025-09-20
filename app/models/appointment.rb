@@ -3,7 +3,7 @@ class Appointment < ApplicationRecord
   belongs_to :service
   belongs_to :provider, class_name: "User"  # required by default
 
-  validates :starts_at, :ends_at, presence: true
+  validates :starts_at, :ends_at, :client_name, presence: true
 
   validate :ends_after_starts
   validate :no_overlap

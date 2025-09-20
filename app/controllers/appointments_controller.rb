@@ -22,15 +22,59 @@ class AppointmentsController < AuthController
   def confirm_booking
     set_company
     set_service
-    set_available_slots(date: params[:date])
-    set_booked_slot(date: params[:date], slot: params[:slot])
 
-    render inertia: "Appointment/ConfirmBooking", props: {
-      currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
-      company: @company,
-      service: @service,
-      available_slots: @available_slots
-    }
+    begin
+      # Parse the appointment times
+      starts_at = DateTime.parse(params[:starts_at])
+      ends_at = DateTime.parse(params[:ends_at])
+
+      # Create the appointment
+      @appointment = Appointment.create!(
+        company: @company,
+        service: @service,
+        provider: Current.user, # Assuming the current user is the provider
+        starts_at: starts_at,
+        ends_at: ends_at,
+        client_name: params[:client_name],
+        client_phone: params[:client_phone],
+        client_email: params[:client_email]
+      )
+
+      respond_to do |format|
+        format.json { render json: {
+          success: true,
+          message: "Appointment booked successfully!",
+          appointment: {
+            id: @appointment.id,
+            starts_at: @appointment.starts_at,
+            ends_at: @appointment.ends_at,
+            client_name: @appointment.client_name
+          }
+        } }
+        format.html { redirect_to company_service_path(@company, @service),
+                     notice: "Appointment booked successfully!" }
+      end
+
+    rescue ActiveRecord::RecordInvalid => e
+      respond_to do |format|
+        format.json { render json: {
+          success: false,
+          message: "Failed to book appointment",
+          errors: e.record.errors.full_messages
+        }, status: :unprocessable_entity }
+        format.html { redirect_to available_slots_company_service_appointments_path(@company, @service),
+                     alert: "Failed to book appointment: #{e.record.errors.full_messages.join(', ')}" }
+      end
+    rescue => e
+      respond_to do |format|
+        format.json { render json: {
+          success: false,
+          message: "An error occurred while booking the appointment"
+        }, status: :internal_server_error }
+        format.html { redirect_to available_slots_company_service_appointments_path(@company, @service),
+                     alert: "An error occurred while booking the appointment" }
+      end
+    end
   end
 
   private
