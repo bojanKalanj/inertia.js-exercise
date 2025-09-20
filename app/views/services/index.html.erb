@@ -20,6 +20,7 @@
         <td><%= link_to 'Edit', edit_company_service_path(@company, service) %></td>
         <td><%= link_to 'Destroy', company_service_path(@company, service),
                         data: { turbo_method: :delete, turbo_confirm: 'Are you sure?' } %></td>
+        <td><%= link_to 'Book', company_make_appointment_available_services_path(@company) %></td>
       </tr>
     <% end %>
   </tbody>

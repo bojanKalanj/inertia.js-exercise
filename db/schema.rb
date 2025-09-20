@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_08_192001) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_20_113856) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -42,7 +42,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_192001) do
   create_table "appointments", force: :cascade do |t|
     t.integer "company_id", null: false
     t.integer "service_id", null: false
-    t.integer "user_id", null: false
+    t.integer "provider_id", null: false
     t.datetime "starts_at"
     t.datetime "ends_at"
     t.string "client_name"
@@ -50,9 +50,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_192001) do
     t.string "client_email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "start_time"
+    t.datetime "end_time"
     t.index ["company_id"], name: "index_appointments_on_company_id"
+    t.index ["provider_id"], name: "index_appointments_on_provider_id"
     t.index ["service_id"], name: "index_appointments_on_service_id"
-    t.index ["user_id"], name: "index_appointments_on_user_id"
   end
 
   create_table "companies", force: :cascade do |t|
@@ -114,7 +116,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_08_192001) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "appointments", "companies"
   add_foreign_key "appointments", "services"
-  add_foreign_key "appointments", "users"
+  add_foreign_key "appointments", "users", column: "provider_id"
   add_foreign_key "companies", "users", column: "owner_id"
   add_foreign_key "projects", "statuses"
   add_foreign_key "services", "companies"
