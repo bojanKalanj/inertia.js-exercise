@@ -3,9 +3,10 @@
 one:
   name: MyString
   description: MyText
-  owner: one
+  owner: lazaro_nixon
 
 two:
   name: MyString
   description: MyText
-  owner: two
+  owner: lazaro_nixon
+

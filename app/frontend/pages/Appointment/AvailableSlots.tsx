@@ -20,22 +20,41 @@ export default function AvailableSlots({
   });
   const [showForm, setShowForm] = useState(false);
 
-  useEffect(() => {
-    if (slots.length > 0) return;
-    handleDateSelect(date);
-  }, [date]);
+  const fetchSlots = async (date: Date) => {
+    // Use local date formatting to avoid timezone issues
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const formatted = `${year}-${month}-${day}`;
 
-  const handleDateSelect = async (d?: Date) => {
-    if (!d) return;
-    setDate(d);
-
-    const formatted = d.toISOString().split("T")[0];
-
+    console.log("formatted", formatted);
     const res = await fetch(
       `/companies/${company.id}/services/${service.id}/appointments/available-slots.json?date=${formatted}`
     );
 
-    const data = await res.json();
+    return res.json();
+  };
+
+  useEffect(() => {
+    if (!date) return;
+
+    if (slots.length > 0) return;
+
+    const loadSlots = async () => {
+      const data = await fetchSlots(date);
+      setSlots(data.slots);
+    };
+
+    loadSlots();
+  }, [date]);
+
+  const handleDateSelect = async (d?: Date) => {
+    console.log("handleDateSelect", d);
+
+    if (!d) return;
+    setDate(d);
+
+    const data = await fetchSlots(d);
     setSlots(data.slots);
   };
 
