@@ -1,23 +1,57 @@
 class AppointmentsController < AuthController
   before_action :try_authenticate
 
-  def available_slots
-    set_company
-    set_service
-    chosen_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
-    set_available_slots(date: chosen_date)
 
-    respond_to do |format|
-      format.json { render json: { slots: @available_slots } }     # <– for fetch
-      format.html { render inertia: "Appointment/AvailableSlots",
-                     props: {
-                       currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
-                       company: @company,
-                       service: @service,
-                       available_slots: @available_slots
-                     } }
+
+
+    def available_slots
+      set_company
+      set_service
+
+      date = params[:date].present? ? Date.parse(params[:date]) : Date.today
+      timeline = AvailabilityService.new(
+        company: @company,
+        service: @service,
+        date: date
+      ).timeline
+
+      respond_to do |format|
+        format.json { render json: { slots: timeline.map { |slot|
+          {
+            status: slot.status,
+            start:  slot.start_time,
+            end:    slot.end_time,
+            appointment: slot.appointment
+          }
+        } } }     # <– for fetch
+        format.html { render inertia: "Appointment/AvailableSlots",
+                       props: {
+                         currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
+                         company: @company,
+                         service: @service
+                       } }
+      end
     end
-  end
+
+  # def available_slots
+  #   set_company
+  #   set_service
+  #   chosen_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
+  #   set_available_slots(date: chosen_date)
+  #   @appointments = @company.appointments.on_date(chosen_date)
+
+  #   respond_to do |format|
+  #     format.json { render json: { slots: @available_slots } }     # <– for fetch
+  #     format.html { render inertia: "Appointment/AvailableSlots",
+  #                    props: {
+  #                      currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
+  #                      company: @company,
+  #                      service: @service,
+  #                      available_slots: @available_slots,
+  #                      appointments: @appointments
+  #                    } }
+  #   end
+  # end
 
   def confirm_booking
     set_company

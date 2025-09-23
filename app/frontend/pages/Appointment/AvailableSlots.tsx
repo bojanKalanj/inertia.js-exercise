@@ -21,7 +21,6 @@ export default function AvailableSlots({
   const [showForm, setShowForm] = useState(false);
 
   const fetchSlots = async (date: Date) => {
-    // Use local date formatting to avoid timezone issues
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -156,11 +155,24 @@ export default function AvailableSlots({
                   onClick={() => handleSelectSlot(slot)}
                   variant={selectedSlot === slot ? "default" : "outline"}
                   className="text-sm"
+                  disabled={slot.status === "booked"}
                 >
-                  {new Date(slot).toLocaleTimeString([], {
+                  {new Date(slot.start).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
+
+                  {slot.status === "booked" && (
+                    <>
+                      {" "}
+                      <span className="text-gray-500 text-xs">
+                        {slot.appointment.service_name}
+                      </span>
+                      <span className="text-gray-500 text-xs">
+                        {slot.appointment.client_name}
+                      </span>
+                    </>
+                  )}
                 </Button>
               ))}
             </div>
