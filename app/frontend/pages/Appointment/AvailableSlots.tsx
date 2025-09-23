@@ -26,7 +26,6 @@ export default function AvailableSlots({
     const day = String(date.getDate()).padStart(2, "0");
     const formatted = `${year}-${month}-${day}`;
 
-    console.log("formatted", formatted);
     const res = await fetch(
       `/companies/${company.id}/services/${service.id}/appointments/available-slots.json?date=${formatted}`
     );
@@ -47,10 +46,9 @@ export default function AvailableSlots({
     loadSlots();
   }, [date]);
 
-  const handleDateSelect = async (d?: Date) => {
-    console.log("handleDateSelect", d);
-
-    if (!d) return;
+  const handleDateSelect = async (slot?: any) => {
+    if (!slot) return;
+    const d = new Date(slot);
     setDate(d);
 
     const data = await fetchSlots(d);
@@ -96,10 +94,8 @@ export default function AvailableSlots({
                 ?.getAttribute("content") || "",
           },
           body: JSON.stringify({
-            starts_at: selectedSlot,
-            ends_at: new Date(
-              new Date(selectedSlot).getTime() + service.duration * 60000
-            ).toISOString(),
+            starts_at: selectedSlot.start,
+            ends_at: selectedSlot.end,
             client_name: clientData.name,
             client_phone: clientData.phone,
             client_email: clientData.email,
@@ -248,7 +244,7 @@ export default function AvailableSlots({
                   <strong>Date:</strong> {date?.toLocaleDateString()}
                   <br />
                   <strong>Time:</strong>{" "}
-                  {new Date(selectedSlot).toLocaleTimeString([], {
+                  {new Date(selectedSlot.start_time).toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
