@@ -1,6 +1,6 @@
 import { Button } from "@/components";
 
-export const AvailableSlotsSection = ({
+export const Slots = ({
   slots = [],
   selectedSlot = null,
   handleSelectSlot,
@@ -11,7 +11,6 @@ export const AvailableSlotsSection = ({
 }) => {
   return (
     <div>
-      <h2 className="text-xl font-semibold mb-4">Available Time Slots</h2>
       <div className="grid grid-cols-2 gap-2">
         {slots.map((slot, index) => (
           <Button

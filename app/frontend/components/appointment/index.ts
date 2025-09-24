@@ -1,3 +1,4 @@
 export * from "./UserForm";
-export * from "./AvailableSlotsSection";
+export * from "./Slots";
+export * from "./ServicesSelect";
 

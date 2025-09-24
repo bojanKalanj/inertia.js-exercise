@@ -3,10 +3,12 @@ import Layout from "@/components/layout";
 import { Calendar } from "@/components/ui/calendar";
 import {
   UserForm,
-  AvailableSlotsSection,
-  RadioGroup,
-  RadioGroupItem,
-  Label,
+  ServicesSelect,
+  AccordionItem,
+  Accordion,
+  AccordionContent,
+  AccordionTrigger,
+  Slots,
 } from "@/components";
 
 export default function AvailableSlots({
@@ -21,13 +23,13 @@ export default function AvailableSlots({
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [slots, setSlots] = useState<any[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [expanded, setExpanded] = useState<string[]>(["slots"]);
   const [selectedService, setSelectedService] = useState<any>(service);
   const [clientData, setClientData] = useState({
     name: "",
     phone: "",
     email: "",
   });
-  const [showForm, setShowForm] = useState(false);
 
   const fetchSlots = async (date: Date, serviceId: string) => {
     const year = date.getFullYear();
@@ -66,7 +68,7 @@ export default function AvailableSlots({
 
   const handleSelectSlot = (slot: any) => {
     setSelectedSlot(slot);
-    setShowForm(true);
+    setExpanded(["form"]);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -119,7 +121,6 @@ export default function AvailableSlots({
         setSlots(data.slots);
         setSelectedSlot(null);
         setClientData({ name: "", phone: "", email: "" });
-        setShowForm(false);
       } else {
         const error = await response.json();
         alert(`Error: ${error.message || "Failed to book appointment"}`);
@@ -129,63 +130,79 @@ export default function AvailableSlots({
       alert("Failed to book appointment. Please try again.");
     }
   };
-
+  console.log(expanded);
   return (
     <Layout title="Book Appointment">
       <div className="max-w-4xl mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Book Appointment</h1>
-          <p className="text-gray-600">
-            <RadioGroup
-              defaultValue={selectedService.id}
-              onValueChange={(value) =>
-                setSelectedService(
-                  available_services.find((service) => service.id === value)
-                )
-              }
-            >
-              {available_services.map((service) => (
-                <div className="flex items-center gap-3">
-                  <RadioGroupItem value={service.id} id={service.id} />
-                  <Label htmlFor={service.id}>
-                    {service.name} - {service.duration} minutes
-                  </Label>
-                </div>
-              ))}
-            </RadioGroup>
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Select Date</h2>
-            <Calendar
-              mode="single"
-              selected={date}
-              onSelect={handleDateSelect}
-              className="rounded-lg border"
-            />
-          </div>
-
-          <AvailableSlotsSection
-            slots={slots}
-            selectedSlot={selectedSlot}
-            handleSelectSlot={handleSelectSlot}
-          />
-        </div>
-
-        {showForm && selectedSlot && (
-          <UserForm
-            service={service}
-            date={date}
-            selectedSlot={selectedSlot}
-            setShowForm={setShowForm}
-            setSelectedSlot={setSelectedSlot}
-            handleSubmitBooking={handleSubmitBooking}
-            clientData={clientData}
-            handleInputChange={handleInputChange}
-          />
-        )}
+        <Accordion
+          type="multiple"
+          className="w-full"
+          value={expanded}
+          onValueChange={setExpanded}
+        >
+          <AccordionItem value="service">
+            <AccordionTrigger>{service.name}</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <ServicesSelect
+                services={available_services}
+                selectedService={selectedService}
+                setSelectedService={setSelectedService}
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="date">
+            <AccordionTrigger>
+              {date
+                ? `${date.toLocaleDateString()} - ${date.toLocaleDateString(
+                    "en-US",
+                    { weekday: "long" }
+                  )}`
+                : "Select Date"}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={handleDateSelect}
+                className="rounded-lg border"
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="slots">
+            <AccordionTrigger>
+              {selectedSlot
+                ? new Date(selectedSlot.start).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })
+                : "Select available slot"}
+            </AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <Slots
+                slots={slots}
+                selectedSlot={selectedSlot}
+                handleSelectSlot={handleSelectSlot}
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="form">
+            <AccordionTrigger>User data</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              {selectedSlot ? (
+                <UserForm
+                  service={service}
+                  date={date}
+                  selectedSlot={selectedSlot}
+                  handleSubmitBooking={handleSubmitBooking}
+                  clientData={clientData}
+                  handleInputChange={handleInputChange}
+                />
+              ) : (
+                "Select a slot to continue"
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </Layout>
   );

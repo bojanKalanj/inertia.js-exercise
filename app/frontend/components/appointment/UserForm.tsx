@@ -4,9 +4,6 @@ interface UserFormProps {
   service: any;
   date: any;
   selectedSlot: any;
-  setShowForm: any;
-  setSelectedSlot: any;
-
   handleSubmitBooking: (e: React.FormEvent) => void;
   clientData: {
     name: string;
@@ -20,8 +17,6 @@ export const UserForm = ({
   service,
   date,
   selectedSlot,
-  setShowForm,
-  setSelectedSlot,
   handleSubmitBooking,
   clientData,
   handleInputChange,
@@ -97,16 +92,6 @@ export const UserForm = ({
         </div>
 
         <div className="flex gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => {
-              setShowForm(false);
-              setSelectedSlot(null);
-            }}
-          >
-            Cancel
-          </Button>
           <Button type="submit" className="bg-green-600 hover:bg-green-700">
             Confirm Booking
           </Button>
