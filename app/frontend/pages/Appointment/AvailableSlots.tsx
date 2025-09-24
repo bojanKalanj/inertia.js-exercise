@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout";
 import { Calendar } from "@/components/ui/calendar";
-import { Button } from "@/components/ui/button";
+import { UserForm, AvailableSlotsSection } from "@/components";
 
 export default function AvailableSlots({
   company,
@@ -106,6 +106,8 @@ export default function AvailableSlots({
       if (response.ok) {
         alert("Appointment booked successfully!");
         // Reset form
+        const data = await fetchSlots(date || new Date());
+        setSlots(data.slots);
         setSelectedSlot(null);
         setClientData({ name: "", phone: "", email: "" });
         setShowForm(false);
@@ -130,7 +132,6 @@ export default function AvailableSlots({
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Calendar Section */}
           <div>
             <h2 className="text-xl font-semibold mb-4">Select Date</h2>
             <Calendar
@@ -141,136 +142,24 @@ export default function AvailableSlots({
             />
           </div>
 
-          {/* Available Slots Section */}
-          <div>
-            <h2 className="text-xl font-semibold mb-4">Available Time Slots</h2>
-            <div className="grid grid-cols-2 gap-2">
-              {slots.map((slot, index) => (
-                <Button
-                  key={index}
-                  onClick={() => handleSelectSlot(slot)}
-                  variant={selectedSlot === slot ? "default" : "outline"}
-                  className="text-sm"
-                  disabled={slot.status === "booked"}
-                >
-                  {new Date(slot.start).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-
-                  {slot.status === "booked" && (
-                    <>
-                      {" "}
-                      <span className="text-gray-500 text-xs">
-                        {slot.appointment.service_name}
-                      </span>
-                      <span className="text-gray-500 text-xs">
-                        {slot.appointment.client_name}
-                      </span>
-                    </>
-                  )}
-                </Button>
-              ))}
-            </div>
-            {slots.length === 0 && (
-              <p className="text-gray-500 text-center py-4">
-                No available slots for this date
-              </p>
-            )}
-          </div>
+          <AvailableSlotsSection
+            slots={slots}
+            selectedSlot={selectedSlot}
+            handleSelectSlot={handleSelectSlot}
+          />
         </div>
 
-        {/* Client Information Form */}
         {showForm && selectedSlot && (
-          <div className="mt-8 p-6 bg-gray-50 rounded-lg">
-            <h3 className="text-xl font-semibold mb-4">Client Information</h3>
-            <form onSubmit={handleSubmitBooking} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={clientData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter your full name"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={clientData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="Enter your phone number"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Email Address *
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={clientData.email}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter your email address"
-                />
-              </div>
-
-              <div className="bg-blue-50 p-4 rounded-md">
-                <h4 className="font-medium text-blue-900 mb-2">
-                  Appointment Details
-                </h4>
-                <p className="text-sm text-blue-800">
-                  <strong>Service:</strong> {service.name}
-                  <br />
-                  <strong>Duration:</strong> {service.duration} minutes
-                  <br />
-                  <strong>Date:</strong> {date?.toLocaleDateString()}
-                  <br />
-                  <strong>Time:</strong>{" "}
-                  {new Date(selectedSlot.start_time).toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
-                </p>
-              </div>
-
-              <div className="flex gap-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setShowForm(false);
-                    setSelectedSlot(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  Confirm Booking
-                </Button>
-              </div>
-            </form>
-          </div>
+          <UserForm
+            service={service}
+            date={date}
+            selectedSlot={selectedSlot}
+            setShowForm={setShowForm}
+            setSelectedSlot={setSelectedSlot}
+            handleSubmitBooking={handleSubmitBooking}
+            clientData={clientData}
+            handleInputChange={handleInputChange}
+          />
         )}
       </div>
     </Layout>
