@@ -5,7 +5,7 @@ export const AvailableSlotsSection = ({
   selectedSlot = null,
   handleSelectSlot,
 }: {
-  slots: any;
+  slots: any[];
   selectedSlot: any;
   handleSelectSlot: any;
 }) => {

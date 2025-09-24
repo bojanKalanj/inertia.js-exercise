@@ -1,9 +1,5 @@
 class AppointmentsController < AuthController
   before_action :try_authenticate
-
-
-
-
     def available_slots
       set_company
       set_service
@@ -14,6 +10,7 @@ class AppointmentsController < AuthController
         service: @service,
         date: date
       ).timeline
+      available_services = @company.services
 
       respond_to do |format|
         format.json { render json: { slots: timeline.map { |slot|
@@ -28,30 +25,11 @@ class AppointmentsController < AuthController
                        props: {
                          currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
                          company: @company,
-                         service: @service
+                         service: @service,
+                         available_services: available_services
                        } }
       end
     end
-
-  # def available_slots
-  #   set_company
-  #   set_service
-  #   chosen_date = params[:date].present? ? Date.parse(params[:date]) : Date.today
-  #   set_available_slots(date: chosen_date)
-  #   @appointments = @company.appointments.on_date(chosen_date)
-
-  #   respond_to do |format|
-  #     format.json { render json: { slots: @available_slots } }     # <– for fetch
-  #     format.html { render inertia: "Appointment/AvailableSlots",
-  #                    props: {
-  #                      currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
-  #                      company: @company,
-  #                      service: @service,
-  #                      available_slots: @available_slots,
-  #                      appointments: @appointments
-  #                    } }
-  #   end
-  # end
 
   def confirm_booking
     set_company

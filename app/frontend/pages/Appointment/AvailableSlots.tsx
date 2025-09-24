@@ -1,18 +1,27 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout";
 import { Calendar } from "@/components/ui/calendar";
-import { UserForm, AvailableSlotsSection } from "@/components";
+import {
+  UserForm,
+  AvailableSlotsSection,
+  RadioGroup,
+  RadioGroupItem,
+  Label,
+} from "@/components";
 
 export default function AvailableSlots({
   company,
   service,
+  available_services,
 }: {
   company: any;
   service: any;
+  available_services: any[];
 }) {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [slots, setSlots] = useState<any[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
+  const [selectedService, setSelectedService] = useState<any>(service);
   const [clientData, setClientData] = useState({
     name: "",
     phone: "",
@@ -20,14 +29,14 @@ export default function AvailableSlots({
   });
   const [showForm, setShowForm] = useState(false);
 
-  const fetchSlots = async (date: Date) => {
+  const fetchSlots = async (date: Date, serviceId: string) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     const formatted = `${year}-${month}-${day}`;
 
     const res = await fetch(
-      `/companies/${company.id}/services/${service.id}/appointments/available-slots.json?date=${formatted}`
+      `/companies/${company.id}/services/${serviceId}/appointments/available-slots.json?date=${formatted}`
     );
 
     return res.json();
@@ -39,7 +48,7 @@ export default function AvailableSlots({
     if (slots.length > 0) return;
 
     const loadSlots = async () => {
-      const data = await fetchSlots(date);
+      const data = await fetchSlots(date, selectedService.id);
       setSlots(data.slots);
     };
 
@@ -51,7 +60,7 @@ export default function AvailableSlots({
     const d = new Date(slot);
     setDate(d);
 
-    const data = await fetchSlots(d);
+    const data = await fetchSlots(d, selectedService.id);
     setSlots(data.slots);
   };
 
@@ -83,7 +92,7 @@ export default function AvailableSlots({
 
     try {
       const response = await fetch(
-        `/companies/${company.id}/services/${service.id}/appointments/confirm-booking`,
+        `/companies/${company.id}/services/${selectedService.id}/appointments/confirm-booking`,
         {
           method: "POST",
           headers: {
@@ -106,7 +115,7 @@ export default function AvailableSlots({
       if (response.ok) {
         alert("Appointment booked successfully!");
         // Reset form
-        const data = await fetchSlots(date || new Date());
+        const data = await fetchSlots(date || new Date(), selectedService.id);
         setSlots(data.slots);
         setSelectedSlot(null);
         setClientData({ name: "", phone: "", email: "" });
@@ -127,7 +136,23 @@ export default function AvailableSlots({
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Book Appointment</h1>
           <p className="text-gray-600">
-            {service.name} - {company.name}
+            <RadioGroup
+              defaultValue={selectedService.id}
+              onValueChange={(value) =>
+                setSelectedService(
+                  available_services.find((service) => service.id === value)
+                )
+              }
+            >
+              {available_services.map((service) => (
+                <div className="flex items-center gap-3">
+                  <RadioGroupItem value={service.id} id={service.id} />
+                  <Label htmlFor={service.id}>
+                    {service.name} - {service.duration} minutes
+                  </Label>
+                </div>
+              ))}
+            </RadioGroup>
           </p>
         </div>
 
