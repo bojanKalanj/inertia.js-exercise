@@ -29,7 +29,9 @@ export default function Layout({
                 Profile
               </Link>
               <button
-                onClick={() => router.delete(`/sessions/${session.id}`)}
+                onClick={() => {
+                  router.delete(`/sessions/${session.id}`);
+                }}
                 className="text-sm hover:underline"
               >
                 Logout

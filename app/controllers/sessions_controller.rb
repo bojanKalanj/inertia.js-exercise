@@ -23,6 +23,7 @@ class SessionsController < AuthController
 
   def destroy
     @session.destroy
+    cookies.delete(:session_token)
     redirect_to root_path, notice: "Signed out successfully"
   end
 
