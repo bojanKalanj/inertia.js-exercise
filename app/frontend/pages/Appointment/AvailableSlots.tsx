@@ -141,7 +141,15 @@ export default function AvailableSlots({
           onValueChange={setExpanded}
         >
           <AccordionItem value="service">
-            <AccordionTrigger>{selectedService.name}</AccordionTrigger>
+            <AccordionTrigger>
+              <div className="flex items-center gap-2">
+                {selectedService.name}
+                <div
+                  className="w-2 h-2 rounded-full"
+                  style={{ backgroundColor: selectedService.color_hex }}
+                />
+              </div>
+            </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <ServicesSelect
                 services={available_services}

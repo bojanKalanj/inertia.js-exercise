@@ -26,7 +26,7 @@ class AppointmentsController < AuthController
                        props: {
                          currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
                          company: @company,
-                         available_services: available_services
+                         available_services: ServiceSerializer.render(available_services)
                        } }
       end
     end

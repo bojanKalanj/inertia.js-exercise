@@ -5,4 +5,8 @@ class AppointmentSerializer < BaseSerializer
   attribute :service_name do
     @object.service.name
   end
+
+  attribute :service_color_hex do
+    @object.service.color_hex
+  end
 end

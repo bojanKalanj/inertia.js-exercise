@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_20_132543) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_25_180122) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -80,6 +80,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_20_132543) do
     t.integer "company_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "color_hex"
     t.index ["company_id"], name: "index_services_on_company_id"
   end
 

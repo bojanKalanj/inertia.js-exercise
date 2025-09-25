@@ -17,9 +17,13 @@ export const ServicesSelect = ({
       }
     >
       {services.map((service) => (
-        <div className="flex items-center gap-3">
+        <div key={service.id} className="flex items-center gap-3">
           <RadioGroupItem value={service.id} id={service.id} />
-          <Label htmlFor={service.id}>
+          <Label htmlFor={service.id} className="flex items-center gap-2">
+            <div
+              className="w-4 h-4 rounded-full border border-gray-300"
+              style={{ backgroundColor: service.color_hex }}
+            />
             {service.name} - {service.duration} minutes
           </Label>
         </div>

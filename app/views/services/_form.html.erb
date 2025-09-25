@@ -30,6 +30,11 @@
     <%= form.number_field :price, step: 0.01 %>
   </div>
 
+  <div class="field">
+    <%= form.label :color_hex %>
+    <%= form.color_field :color_hex %>
+  </div>
+
   <div class="actions">
     <%= form.submit %>
   </div>
