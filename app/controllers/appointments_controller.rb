@@ -89,6 +89,19 @@ class AppointmentsController < AuthController
     end
   end
 
+  def cancel_booking
+    set_company
+    set_service
+    @appointment = Appointment.find(params[:id])
+    @appointment.destroy
+
+    respond_to do |format|
+      format.json { render json: { success: true, message: "Appointment canceled successfully!" } }
+      format.html { redirect_to available_slots_company_service_appointments_path(@company, @service),
+                     notice: "Appointment canceled successfully!" }
+    end
+  end
+
   private
 
   def set_company

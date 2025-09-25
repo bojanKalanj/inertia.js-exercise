@@ -130,7 +130,7 @@ export default function AvailableSlots({
       alert("Failed to book appointment. Please try again.");
     }
   };
-  console.log(expanded);
+
   return (
     <Layout title="Book Appointment">
       <div className="max-w-4xl mx-auto p-6">
@@ -190,6 +190,15 @@ export default function AvailableSlots({
                 slots={slots}
                 selectedSlot={selectedSlot}
                 handleSelectSlot={handleSelectSlot}
+                company={company}
+                selectedService={selectedService}
+                refetchSlots={async () => {
+                  const data = await fetchSlots(
+                    date || new Date(),
+                    selectedService.id
+                  );
+                  setSlots(data.slots);
+                }}
               />
             </AccordionContent>
           </AccordionItem>

@@ -6,6 +6,9 @@ Rails.application.routes.draw do
           get "available-slots", action: :available_slots
           post "confirm-booking", action: :confirm_booking
         end
+        member do
+          post "cancel-booking", action: :cancel_booking
+        end
       end
     end
   end
