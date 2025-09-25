@@ -13,18 +13,18 @@ import {
 
 export default function AvailableSlots({
   company,
-  service,
   available_services,
 }: {
   company: any;
-  service: any;
   available_services: any[];
 }) {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [slots, setSlots] = useState<any[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [expanded, setExpanded] = useState<string[]>(["slots"]);
-  const [selectedService, setSelectedService] = useState<any>(service);
+  const [selectedService, setSelectedService] = useState<any>(
+    available_services[0]
+  );
   const [clientData, setClientData] = useState({
     name: "",
     phone: "",
@@ -141,7 +141,7 @@ export default function AvailableSlots({
           onValueChange={setExpanded}
         >
           <AccordionItem value="service">
-            <AccordionTrigger>{service.name}</AccordionTrigger>
+            <AccordionTrigger>{selectedService.name}</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
               <ServicesSelect
                 services={available_services}
@@ -190,7 +190,7 @@ export default function AvailableSlots({
             <AccordionContent className="flex flex-col gap-4 text-balance">
               {selectedSlot ? (
                 <UserForm
-                  service={service}
+                  service={selectedService}
                   date={date}
                   selectedSlot={selectedSlot}
                   handleSubmitBooking={handleSubmitBooking}
