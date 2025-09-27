@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Layout from "@/components/layout";
-import { Calendar } from "@/components/ui/calendar";
 import {
   UserForm,
   ServicesSelect,
@@ -9,6 +8,7 @@ import {
   AccordionContent,
   AccordionTrigger,
   Slots,
+  AppointmentsCalendar,
 } from "@/components";
 
 export default function AvailableSlots({
@@ -168,11 +168,13 @@ export default function AvailableSlots({
                 : "Select Date"}
             </AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
-              <Calendar
+              <AppointmentsCalendar
                 mode="single"
                 selected={date}
                 onSelect={handleDateSelect}
-                className="rounded-lg border"
+                className="rounded-lg border w-full"
+                company={company}
+                service={selectedService}
               />
             </AccordionContent>
           </AccordionItem>

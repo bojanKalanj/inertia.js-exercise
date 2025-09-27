@@ -1,6 +1,21 @@
 class AppointmentsController < AuthController
   before_action :try_authenticate
 
+ def monthly_appointments
+  set_company
+  month_date = params[:month].present? ? Date.parse("#{params[:month]}-01") : Date.current
+  @appointments = @company.appointments.in_month(month_date)
+
+  respond_to do |format|
+    format.json { render json: { appointments: @appointments } }
+    format.html { render inertia: "Appointment/MonthlyAppointments",
+                   props: {
+                     company: @company,
+                     appointments: @appointments
+                   } }
+  end
+ end
+
   def available_slots
       set_company
       set_service

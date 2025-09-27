@@ -1,15 +1,15 @@
-import * as React from "react"
+import * as React from "react";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-} from "lucide-react"
-import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker"
+} from "lucide-react";
+import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 
-import { cn } from "@/lib/utils"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/button";
 
-function Calendar({
+function AppointmentsCalendar({
   className,
   classNames,
   showOutsideDays = true,
@@ -17,11 +17,48 @@ function Calendar({
   buttonVariant = "ghost",
   formatters,
   components,
+  company,
+  service,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
-  buttonVariant?: React.ComponentProps<typeof Button>["variant"]
+  buttonVariant?: React.ComponentProps<typeof Button>["variant"];
+  company: any;
+  service: any;
 }) {
-  const defaultClassNames = getDefaultClassNames()
+  const defaultClassNames = getDefaultClassNames();
+  const [month, setMonth] = React.useState<Date>(new Date());
+  const [appointments, setAppointments] = React.useState<any[]>([]);
+
+  const fetchAppointmentsForMonth = React.useCallback(async () => {
+    try {
+      const monthParam = month.toISOString().slice(0, 7); // Format as YYYY-MM
+      const response = await fetch(
+        `/companies/${company.id}/services/${service.id}/appointments/monthly-appointments?month=${monthParam}`
+      );
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch appointments: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setAppointments(data.appointments || []);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+      setAppointments([]);
+    }
+  }, [month, company, service]);
+
+  React.useEffect(() => {
+    fetchAppointmentsForMonth();
+  }, [fetchAppointmentsForMonth]);
+
+  const handleMonthChange = React.useCallback(
+    (month: Date) => {
+      setMonth(month);
+      props.onMonthChange?.(month);
+    },
+    [props.onMonthChange]
+  );
 
   return (
     <DayPicker
@@ -131,13 +168,13 @@ function Calendar({
               className={cn(className)}
               {...props}
             />
-          )
+          );
         },
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return (
               <ChevronLeftIcon className={cn("size-4", className)} {...props} />
-            )
+            );
           }
 
           if (orientation === "right") {
@@ -146,14 +183,21 @@ function Calendar({
                 className={cn("size-4", className)}
                 {...props}
               />
-            )
+            );
           }
 
           return (
             <ChevronDownIcon className={cn("size-4", className)} {...props} />
-          )
+          );
         },
-        DayButton: CalendarDayButton,
+        DayButton: ({ className, day, modifiers, ...props }) =>
+          AppointmentsCalendarDayButton({
+            className,
+            day,
+            modifiers,
+            appointments,
+            ...props,
+          }),
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -161,28 +205,69 @@ function Calendar({
                 {children}
               </div>
             </td>
-          )
+          );
         },
         ...components,
       }}
+      onMonthChange={handleMonthChange}
       {...props}
     />
-  )
+  );
 }
 
-function CalendarDayButton({
+function AppointmentsCalendarDayButton({
   className,
   day,
   modifiers,
+  appointments,
   ...props
-}: React.ComponentProps<typeof DayButton>) {
-  const defaultClassNames = getDefaultClassNames()
+}: React.ComponentProps<typeof DayButton> & {
+  appointments: any[];
+}) {
+  const defaultClassNames = getDefaultClassNames();
 
-  const ref = React.useRef<HTMLButtonElement>(null)
+  const ref = React.useRef<HTMLButtonElement>(null);
   React.useEffect(() => {
-    if (modifiers.focused) ref.current?.focus()
-  }, [modifiers.focused])
+    if (modifiers.focused) ref.current?.focus();
+  }, [modifiers.focused]);
 
+  const getAppointmentsForDay = React.useCallback(() => {
+    if (!appointments || appointments.length === 0 || !day?.date) {
+      return [];
+    }
+
+    return appointments.filter((appointment) => {
+      if (!appointment?.starts_at) {
+        return false;
+      }
+
+      try {
+        const appointmentDate = new Date(appointment.starts_at);
+        const dayDate = day.date;
+
+        // Validate that the dates are valid
+        if (isNaN(appointmentDate.getTime()) || isNaN(dayDate.getTime())) {
+          return false;
+        }
+
+        // Compare dates (year, month, day) instead of times
+        return (
+          appointmentDate.getFullYear() === dayDate.getFullYear() &&
+          appointmentDate.getMonth() === dayDate.getMonth() &&
+          appointmentDate.getDate() === dayDate.getDate()
+        );
+      } catch (error) {
+        console.error("Error processing appointment date:", error, appointment);
+        return false;
+      }
+    });
+  }, [appointments, day]);
+
+  // Memoize the appointments count to avoid recalculating on every render
+  const appointmentsCount = React.useMemo(() => {
+    return getAppointmentsForDay().length;
+  }, [getAppointmentsForDay]);
+  console.log("appointmentsCount: ", appointmentsCount);
   return (
     <Button
       ref={ref}
@@ -198,14 +283,25 @@ function CalendarDayButton({
       data-range-start={modifiers.range_start}
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
+      data-appointments-count={appointmentsCount}
       className={cn(
         "data-[selected-single=true]:bg-primary data-[selected-single=true]:text-primary-foreground data-[range-middle=true]:bg-accent data-[range-middle=true]:text-accent-foreground data-[range-start=true]:bg-primary data-[range-start=true]:text-primary-foreground data-[range-end=true]:bg-primary data-[range-end=true]:text-primary-foreground group-data-[focused=true]/day:border-ring group-data-[focused=true]/day:ring-ring/50 dark:hover:text-accent-foreground flex aspect-square size-auto w-full min-w-(--cell-size) flex-col gap-1 leading-none font-normal group-data-[focused=true]/day:relative group-data-[focused=true]/day:z-10 group-data-[focused=true]/day:ring-[3px] data-[range-end=true]:rounded-md data-[range-end=true]:rounded-r-md data-[range-middle=true]:rounded-none data-[range-start=true]:rounded-md data-[range-start=true]:rounded-l-md [&>span]:text-xs [&>span]:opacity-70",
         defaultClassNames.day,
         className
       )}
       {...props}
-    />
-  )
+    >
+      {appointmentsCount > 0 && (
+        <span className="text-xs text-muted-foreground">
+          {appointmentsCount}
+        </span>
+      )}
+      {day.date.toLocaleDateString("en-US", {
+        day: "numeric",
+      })}
+    </Button>
+  );
 }
 
-export { Calendar, CalendarDayButton }
+export { AppointmentsCalendar, AppointmentsCalendarDayButton };
+

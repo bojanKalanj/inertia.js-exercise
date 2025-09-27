@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     resources :services do
       resources :appointments do
         collection do
+          get "monthly-appointments", action: :monthly_appointments
           get "available-slots", action: :available_slots
           post "confirm-booking", action: :confirm_booking
         end
