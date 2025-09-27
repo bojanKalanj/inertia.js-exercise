@@ -1,7 +1,8 @@
 import { createInertiaApp } from "@inertiajs/react";
-import { createElement, ReactNode } from "react";
+import React, { createElement, ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 // Temporary type definition, until @inertiajs/react provides one
 type ResolvedComponent = {
@@ -47,7 +48,12 @@ createInertiaApp({
         {
           client: queryClient,
         },
-        createElement(App, props)
+        createElement(
+          React.Fragment,
+          null,
+          createElement(App, props),
+          createElement(ReactQueryDevtools, { initialIsOpen: false })
+        )
       );
 
       createRoot(el).render(wrappedApp);

@@ -1,5 +1,6 @@
 import { Button } from "@/components";
 import { BookedAppointmentPopover } from "./booked-appointment-popover";
+import { Fragment } from "react/jsx-runtime";
 
 export const Slots = ({
   slots = [],
@@ -42,22 +43,24 @@ export const Slots = ({
   return (
     <div>
       <div className="grid grid-cols-2 gap-2">
-        {slots.map((slot, index) => {
+        {slots.map((slot) => {
           if (slot.status === "booked") {
             return (
-              <BookedAppointmentPopover
-                appointment={slot.appointment}
-                onCancelAppointment={async () => {
-                  await cancelBooking(slot.appointment.id);
-                  refetchSlots();
-                }}
-              />
+              <Fragment key={slot.appointment.id}>
+                <BookedAppointmentPopover
+                  appointment={slot.appointment}
+                  onCancelAppointment={async () => {
+                    await cancelBooking(slot.appointment.id);
+                    refetchSlots();
+                  }}
+                />
+              </Fragment>
             );
           }
 
           return (
             <Button
-              key={index}
+              key={slot.start}
               onClick={() => handleSelectSlot(slot)}
               variant={selectedSlot === slot ? "default" : "outline"}
               className="text-sm"
