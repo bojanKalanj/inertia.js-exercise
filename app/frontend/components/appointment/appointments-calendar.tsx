@@ -8,6 +8,7 @@ import { DayButton, DayPicker, getDefaultClassNames } from "react-day-picker";
 
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { useGetAppointments } from "@/api/queries";
 
 function AppointmentsCalendar({
   className,
@@ -27,30 +28,11 @@ function AppointmentsCalendar({
 }) {
   const defaultClassNames = getDefaultClassNames();
   const [month, setMonth] = React.useState<Date>(new Date());
-  const [appointments, setAppointments] = React.useState<any[]>([]);
-
-  const fetchAppointmentsForMonth = React.useCallback(async () => {
-    try {
-      const monthParam = month.toISOString().slice(0, 7); // Format as YYYY-MM
-      const response = await fetch(
-        `/companies/${company.id}/services/${service.id}/appointments/monthly-appointments?month=${monthParam}`
-      );
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch appointments: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setAppointments(data.appointments || []);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      setAppointments([]);
-    }
-  }, [month, company, service]);
-
-  React.useEffect(() => {
-    fetchAppointmentsForMonth();
-  }, [fetchAppointmentsForMonth]);
+  const { appointments, isLoadingAppointments } = useGetAppointments(
+    company.id,
+    service.id,
+    month?.toISOString().slice(0, 7) || ""
+  );
 
   const handleMonthChange = React.useCallback(
     (month: Date) => {
@@ -59,6 +41,10 @@ function AppointmentsCalendar({
     },
     [props.onMonthChange]
   );
+
+  if (isLoadingAppointments) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <DayPicker
