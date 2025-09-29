@@ -5,9 +5,14 @@ class AuthController < ApplicationController
   private
 
     def authenticate
-      if session_record = Session.find_by_id(cookies.signed[:session_token])
+      session_token = cookies.signed[:session_token]
+      Rails.logger.debug "Session token from cookie: #{session_token.inspect}"
+
+      if session_record = Session.find_by_id(session_token)
+        Rails.logger.debug "Found session: #{session_record.id} for user: #{session_record.user.email}"
         Current.session = session_record
       else
+        Rails.logger.debug "No session found for token: #{session_token.inspect}"
         redirect_to sign_in_path
       end
     end
