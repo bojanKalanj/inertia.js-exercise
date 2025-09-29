@@ -3,7 +3,16 @@ import AppointmentsApiService from "../services/appointments.service";
 
 export const appointmentsQueriesFactory = {
   baseEntityKey: ["appointments"],
-  getAppointments: (companyId: string, serviceId: string, monthParam: string) =>
+  getAppointments: (
+    companyId: string,
+    serviceId: string,
+    monthParam: string,
+    {
+      enabled = true,
+    }: {
+      enabled?: boolean;
+    }
+  ) =>
     queryOptions({
       queryKey: [
         ...appointmentsQueriesFactory.baseEntityKey,
@@ -20,6 +29,7 @@ export const appointmentsQueriesFactory = {
         );
         return data;
       },
+      enabled,
     }),
 };
 

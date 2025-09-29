@@ -9,6 +9,7 @@ export const Slots = ({
   refetchSlots,
   company,
   selectedService,
+  onCancelAppointment,
 }: {
   slots: any[];
   selectedSlot: any;
@@ -16,6 +17,7 @@ export const Slots = ({
   refetchSlots: () => void;
   company: any;
   selectedService: any;
+  onCancelAppointment: (appointmentId: string) => void;
 }) => {
   const cancelBooking = async (appointmentId: string) => {
     const response = await fetch(
@@ -34,6 +36,7 @@ export const Slots = ({
 
     if (response.ok) {
       console.log("Appointment canceled successfully!");
+      onCancelAppointment(appointmentId);
     } else {
       const error = await response.json();
       alert(`Error: ${error.message || "Failed to cancel appointment"}`);

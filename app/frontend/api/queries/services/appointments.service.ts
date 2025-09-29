@@ -5,7 +5,12 @@ class AppointmentsApiService {
     monthParam: string
   ) {
     const response = await fetch(
-      `/companies/${companyId}/services/${serviceId}/appointments/monthly-appointments?month=${monthParam}`
+      `/companies/${companyId}/services/${serviceId}/appointments/monthly-appointments?month=${monthParam}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
     return response.json();
   }

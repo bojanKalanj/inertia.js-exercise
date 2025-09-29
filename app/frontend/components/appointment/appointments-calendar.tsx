@@ -253,7 +253,7 @@ function AppointmentsCalendarDayButton({
   const appointmentsCount = React.useMemo(() => {
     return getAppointmentsForDay().length;
   }, [getAppointmentsForDay]);
-  console.log("appointmentsCount: ", appointmentsCount);
+
   return (
     <Button
       ref={ref}

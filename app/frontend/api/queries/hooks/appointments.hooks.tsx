@@ -4,10 +4,24 @@ import { appointmentsQueriesFactory } from "../factories";
 export const useGetAppointments = (
   companyId: string,
   serviceId: string,
-  monthParam: string
+  monthParam: string,
+  {
+    enabled = true,
+  }: {
+    enabled?: boolean;
+  } = {
+    enabled: true,
+  }
 ) => {
   const { data, isLoading, isError } = useQuery(
-    appointmentsQueriesFactory.getAppointments(companyId, serviceId, monthParam)
+    appointmentsQueriesFactory.getAppointments(
+      companyId,
+      serviceId,
+      monthParam,
+      {
+        enabled,
+      }
+    )
   );
 
   return {
@@ -15,7 +29,10 @@ export const useGetAppointments = (
     getAppointmentsQueryKey: appointmentsQueriesFactory.getAppointments(
       companyId,
       serviceId,
-      monthParam
+      monthParam,
+      {
+        enabled,
+      }
     ).queryKey,
     appointmentsIsLoading: isLoading,
     isError,

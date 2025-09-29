@@ -10,6 +10,8 @@ import {
   Slots,
   AppointmentsCalendar,
 } from "@/components";
+import { useGetAppointments } from "@/api/queries";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function AvailableSlots({
   company,
@@ -18,12 +20,19 @@ export default function AvailableSlots({
   company: any;
   available_services: any[];
 }) {
+  const queryClient = useQueryClient();
   const [date, setDate] = useState<Date | undefined>(new Date());
+  const month = date?.toISOString().slice(0, 7) || "";
   const [slots, setSlots] = useState<any[]>([]);
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [expanded, setExpanded] = useState<string[]>(["slots"]);
   const [selectedService, setSelectedService] = useState<any>(
     available_services[0]
+  );
+  const { getAppointmentsQueryKey } = useGetAppointments(
+    company.id,
+    selectedService.id,
+    month
   );
   const [clientData, setClientData] = useState({
     name: "",
@@ -200,6 +209,11 @@ export default function AvailableSlots({
                     selectedService.id
                   );
                   setSlots(data.slots);
+                }}
+                onCancelAppointment={() => {
+                  queryClient.invalidateQueries({
+                    queryKey: getAppointmentsQueryKey,
+                  });
                 }}
               />
             </AccordionContent>
