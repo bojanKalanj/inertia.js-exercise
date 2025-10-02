@@ -15,17 +15,11 @@ export default function Layout({
     <main>
       <Head title={title} />
       <header className="flex justify-between items-center p-4 bg-gray-100">
-        <Link href="/" className="text-2xl font-bold">
-          Home
-        </Link>
+        <Link href="/">Home</Link>
         <div className="flex gap-4 items-center">
-          <Link href="/about" className="text-2xl font-bold">
-            About
-          </Link>
-
           {currentUser ? (
             <>
-              <Link href="/profile" className="text-2xl font-bold">
+              <Link href="/profile" className="text-sm">
                 Profile
               </Link>
               <button
@@ -44,7 +38,7 @@ export default function Layout({
           )}
         </div>
       </header>
-      <article>{children}</article>
+      <article className="p-4">{children}</article>
     </main>
   );
 }
