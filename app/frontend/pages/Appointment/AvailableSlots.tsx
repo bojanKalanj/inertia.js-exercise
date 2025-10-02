@@ -17,10 +17,12 @@ export default function AvailableSlots({
   company,
   available_services,
   service_id,
+  currentUser,
 }: {
   company: any;
   available_services: any[];
   service_id: string;
+  currentUser: any;
 }) {
   const queryClient = useQueryClient();
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -144,8 +146,8 @@ export default function AvailableSlots({
   };
 
   return (
-    <Layout title="Book Appointment">
-      <div className="max-w-4xl mx-auto p-6">
+    <Layout title="Book Appointment" currentUser={currentUser}>
+      <div className="max-w-4xl mx-auto">
         <Accordion
           type="multiple"
           className="w-full"
