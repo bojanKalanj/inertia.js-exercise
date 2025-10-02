@@ -28,10 +28,20 @@ function AppointmentsCalendar({
 }) {
   const defaultClassNames = getDefaultClassNames();
   const [month, setMonth] = React.useState<Date>(new Date());
+  const monthString = React.useMemo(() => {
+    if (!month) return "";
+    const year = month.getFullYear();
+    const monthNum = month.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+    return `${year}-${monthNum.toString().padStart(2, "0")}`;
+  }, [month]);
+
   const { appointments, isLoadingAppointments } = useGetAppointments(
-    company.id,
-    service.id,
-    month?.toISOString().slice(0, 7) || ""
+    company?.id,
+    service?.id,
+    monthString,
+    {
+      enabled: !!(company?.id && service?.id && monthString),
+    }
   );
 
   const handleMonthChange = React.useCallback(
@@ -195,6 +205,7 @@ function AppointmentsCalendar({
         },
         ...components,
       }}
+      month={month}
       onMonthChange={handleMonthChange}
       {...props}
     />
