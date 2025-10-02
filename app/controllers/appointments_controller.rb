@@ -27,6 +27,7 @@ class AppointmentsController < AuthController
         date: date
       ).timeline
       available_services = @company.services
+      service_id = @service.id
 
       respond_to do |format|
         format.json { render json: { slots: timeline.map { |slot|
@@ -41,7 +42,8 @@ class AppointmentsController < AuthController
                        props: {
                          currentUser: Current.user ? UserSerializer.render(Current.user) : nil,
                          company: @company,
-                         available_services: ServiceSerializer.render(available_services)
+                         available_services: ServiceSerializer.render(available_services),
+                         service_id: service_id
                        } }
       end
     end

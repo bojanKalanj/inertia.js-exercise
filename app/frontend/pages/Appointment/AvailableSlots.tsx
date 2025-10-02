@@ -16,9 +16,11 @@ import { useQueryClient } from "@tanstack/react-query";
 export default function AvailableSlots({
   company,
   available_services,
+  service_id,
 }: {
   company: any;
   available_services: any[];
+  service_id: string;
 }) {
   const queryClient = useQueryClient();
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -27,7 +29,8 @@ export default function AvailableSlots({
   const [selectedSlot, setSelectedSlot] = useState<any>(null);
   const [expanded, setExpanded] = useState<string[]>(["slots"]);
   const [selectedService, setSelectedService] = useState<any>(
-    available_services[0]
+    available_services.find((service) => service.id === service_id) ||
+      available_services[0]
   );
   const { getAppointmentsQueryKey } = useGetAppointments(
     company.id,
