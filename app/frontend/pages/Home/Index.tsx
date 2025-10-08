@@ -11,6 +11,32 @@ export default function Index({
   companies: any;
   services: any;
 }) {
+  if (!currentUser || !session) {
+    return (
+      <Layout title="Home" currentUser={currentUser} session={session}>
+        <div>
+          <h1>Home</h1>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (!companies || companies.length === 0) {
+    return (
+      <Layout title="Home" currentUser={currentUser} session={session}>
+        <div>
+          <h1>No companies found</h1>
+          <p>
+            You don't have any companies yet. Please create a company first.
+          </p>
+          <a href="/companies/new" className="text-sm hover:underline">
+            Create Company
+          </a>
+        </div>
+      </Layout>
+    );
+  }
+
   return (
     <Layout title="Home" currentUser={currentUser} session={session}>
       <div>

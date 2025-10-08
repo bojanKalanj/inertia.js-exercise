@@ -11,13 +11,14 @@ export default function Layout({
   currentUser?: any;
   session?: any;
 }) {
+  console.log({ session, currentUser });
   return (
     <main>
       <Head title={title} />
       <header className="flex justify-between items-center p-4 bg-gray-100">
         <Link href="/">Home</Link>
         <div className="flex gap-4 items-center">
-          {currentUser ? (
+          {currentUser && session ? (
             <>
               <Link href="/profile" className="text-sm">
                 Profile
