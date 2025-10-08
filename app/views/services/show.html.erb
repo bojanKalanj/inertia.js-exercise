@@ -18,5 +18,7 @@
   <%= number_to_currency(@service.price) %>
 </p>
 
+<%= button_to 'Book', available_slots_company_service_appointments_path(@company, @service), method: :get %>
+<%= button_to 'Destroy', company_service_path(@company, @service), method: :delete %>
 <%= link_to 'Edit', edit_company_service_path(@company, @service) %> |
 <%= link_to 'Back', company_services_path(@company) %>

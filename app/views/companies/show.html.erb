@@ -6,5 +6,6 @@
   <%= link_to "Edit this company", edit_company_path(@company) %> |
   <%= link_to "Back to companies", companies_path %>
 
+  <%= button_to "Add service", new_company_service_path(@company), method: :get %>
   <%= button_to "Destroy this company", @company, method: :delete %>
 </div>
