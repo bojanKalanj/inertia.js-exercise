@@ -1,4 +1,4 @@
-import { Root, Title, Description, Close } from "@radix-ui/react-toast";
+import { Root, Title, Description } from "@radix-ui/react-toast";
 import "./styles.css";
 
 interface Props {

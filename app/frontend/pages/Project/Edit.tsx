@@ -9,8 +9,6 @@ interface EditProps {
 }
 
 export default function Edit({ project, statuses }: EditProps) {
-  console.log(statuses);
-
   return (
     <>
       <Head title="Editing project" />

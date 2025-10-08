@@ -1,13 +1,5 @@
 import { Link, Head, router } from "@inertiajs/react";
-import {
-  Provider,
-  Root,
-  Title,
-  Description,
-  Action,
-  Close,
-  Viewport,
-} from "@radix-ui/react-toast";
+import { Provider, Viewport } from "@radix-ui/react-toast";
 
 export default function Layout({
   children,
@@ -20,7 +12,6 @@ export default function Layout({
   currentUser?: any;
   session?: any;
 }) {
-  console.log({ session, currentUser });
   return (
     <Provider>
       <main>

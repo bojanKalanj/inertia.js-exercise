@@ -39,7 +39,6 @@ export default function Index({ currentUser }: Props) {
     e.preventDefault();
     patch("/profile", {
       onSuccess: () => {
-        console.log("success");
         setPreviewUrl(null);
       },
       forceFormData: true,

@@ -35,7 +35,6 @@ export const Slots = ({
     );
 
     if (response.ok) {
-      console.log("Appointment canceled successfully!");
       onCancelAppointment(appointmentId);
     } else {
       const error = await response.json();
