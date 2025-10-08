@@ -9,6 +9,7 @@ import {
   AccordionTrigger,
   Slots,
   AppointmentsCalendar,
+  Toast,
 } from "@/components";
 import { useGetAppointments } from "@/api/queries";
 import { useQueryClient } from "@tanstack/react-query";
@@ -27,6 +28,7 @@ export default function AvailableSlots({
   session: any;
 }) {
   const queryClient = useQueryClient();
+  const [showToast, setShowToast] = useState(false);
   const [date, setDate] = useState<Date | undefined>(new Date());
   const month = date?.toISOString().slice(0, 7) || "";
   const [slots, setSlots] = useState<any[]>([]);
@@ -131,7 +133,7 @@ export default function AvailableSlots({
       );
 
       if (response.ok) {
-        alert("Appointment booked successfully!");
+        setShowToast(true);
         // Reset form
         const data = await fetchSlots(date || new Date(), selectedService.id);
         setSlots(data.slots);
@@ -248,6 +250,13 @@ export default function AvailableSlots({
           </AccordionItem>
         </Accordion>
       </div>
+
+      <Toast
+        showToast={showToast}
+        setShowToast={setShowToast}
+        title="Appointment booked successfully!"
+        description="Your appointment has been booked successfully."
+      />
     </Layout>
   );
 }

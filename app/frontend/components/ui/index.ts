@@ -5,4 +5,5 @@ export * from "./accordion";
 export * from "./popover";
 export * from "./input";
 export * from "./dialog";
+export * from "./toast/toast";
 
